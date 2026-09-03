@@ -1,0 +1,228 @@
+{
+  "domain": "workspace",
+  "vatRate": 0.20,
+  "scene": {
+    "type": "desk_workspace",
+    "maxHeightMm": 2000
+  },
+  "elements": [
+    {
+      "id": "desk_top",
+      "sku": "WS-TOP-1600",
+      "type": "desk_top",
+      "name": "Столешница",
+      "priceEur": 280,
+      "dimensions": { "width": 1600, "depth": 800, "height": 30 },
+      "anchorTypeRequired": "frame_top",
+      "anchorsProvided": [
+        {
+          "id": "desktop_surface",
+          "position": { "x": 0, "y": 0, "z": 15 },
+          "direction": { "x": 0, "y": 0, "z": 1 },
+          "allowedTypes": ["keyboard", "mouse", "laptop", "monitor"]
+        },
+        {
+          "id": "monitor_arm_mount",
+          "position": { "x": 0, "y": -350, "z": 15 },
+          "direction": { "x": 0, "y": 0, "z": 1 },
+          "allowedTypes": ["monitor_arm"]
+        },
+        {
+          "id": "cable_tray_mount",
+          "position": { "x": 0, "y": 0, "z": -15 },
+          "direction": { "x": 0, "y": 0, "z": -1 },
+          "allowedTypes": ["cable_tray"]
+        },
+        {
+          "id": "drawer_mount",
+          "position": { "x": -400, "y": 0, "z": -15 },
+          "direction": { "x": 0, "y": 0, "z": -1 },
+          "allowedTypes": ["drawer"]
+        }
+      ],
+      "relations": [
+        { "type": "requires", "targetId": "desk_frame" }
+      ],
+      "anchors": [
+        {
+          "id": "desk.top.center",
+          "position": { "x": 800, "y": 30, "z": 400 },
+          "direction": { "x": 0, "y": 1, "z": 0 },
+          "allowedTypes": ["monitor_arm", "laptop"]
+        },
+        {
+          "id": "desk.top.left",
+          "position": { "x": 300, "y": 30, "z": 400 },
+          "direction": { "x": 0, "y": 1, "z": 0 },
+          "allowedTypes": ["monitor_arm", "laptop"]
+        },
+        {
+          "id": "desk.top.right",
+          "position": { "x": 1300, "y": 30, "z": 400 },
+          "direction": { "x": 0, "y": 1, "z": 0 },
+          "allowedTypes": ["monitor_arm", "laptop"]
+        },
+        {
+          "id": "desk.top.front",
+          "position": { "x": 800, "y": 30, "z": 150 },
+          "direction": { "x": 0, "y": 1, "z": 0 },
+          "allowedTypes": ["keyboard", "mouse"]
+        },
+        {
+          "id": "desk.top.front_right",
+          "position": { "x": 1100, "y": 30, "z": 150 },
+          "direction": { "x": 0, "y": 1, "z": 0 },
+          "allowedTypes": ["keyboard", "mouse"]
+        },
+        {
+          "id": "desk.bottom.rear",
+          "position": { "x": 800, "y": 0, "z": 700 },
+          "direction": { "x": 0, "y": -1, "z": 0 },
+          "allowedTypes": ["cable_tray", "power_strip"]
+        },
+        {
+          "id": "desk.frame.left",
+          "position": { "x": 200, "y": 360, "z": 400 },
+          "direction": { "x": 1, "y": 0, "z": 0 },
+          "allowedTypes": ["drawer"]
+        }
+      ]
+    },
+    {
+      "id": "desk_frame",
+      "sku": "WS-FR-LIFT-1600",
+      "type": "desk_frame",
+      "name": "Подъёмная рама",
+      "priceEur": 450,
+      "dimensions": { "width": 1600, "depth": 800, "height": 720 },
+      "anchorTypeRequired": "floor",
+      "anchorsProvided": [
+        {
+          "id": "frame_top",
+          "position": { "x": 0, "y": 0, "z": 720 },
+          "direction": { "x": 0, "y": 0, "z": 1 },
+          "allowedTypes": ["desk_top"]
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "monitor",
+      "sku": "WS-MON-27",
+      "type": "monitor",
+      "name": "Монитор",
+      "priceEur": 320,
+      "dimensions": { "width": 600, "depth": 200, "height": 400 },
+      "anchorTypeRequired": "vesa",
+      "anchorsProvided": [],
+      "relations": [
+        { "type": "requires", "targetId": "monitor_arm" }
+      ]
+    },
+    {
+      "id": "monitor_arm",
+      "sku": "WS-ARM-VESA",
+      "type": "monitor_arm",
+      "name": "Кронштейн монитора",
+      "priceEur": 85,
+      "dimensions": { "width": 100, "depth": 100, "height": 500 },
+      "anchorTypeRequired": "monitor_arm_mount",
+      "anchorsProvided": [
+        {
+          "id": "vesa",
+          "position": { "x": 0, "y": 0, "z": 400 },
+          "direction": { "x": 0, "y": 1, "z": 0 },
+          "allowedTypes": ["monitor"]
+        }
+      ],
+      "relations": [
+        { "type": "mountedOn", "targetId": "desk_top" }
+      ]
+    },
+    {
+      "id": "keyboard",
+      "sku": "WS-KB-75",
+      "type": "keyboard",
+      "name": "Клавиатура",
+      "priceEur": 95,
+      "dimensions": { "width": 450, "depth": 150, "height": 30 },
+      "anchorTypeRequired": "desktop_surface",
+      "anchorsProvided": [],
+      "relations": [
+        { "type": "compatibleWith", "targetId": "desk_top" }
+      ]
+    },
+    {
+      "id": "mouse",
+      "sku": "WS-MS-ERG",
+      "type": "mouse",
+      "name": "Мышь",
+      "priceEur": 55,
+      "dimensions": { "width": 120, "depth": 70, "height": 40 },
+      "anchorTypeRequired": "desktop_surface",
+      "anchorsProvided": [],
+      "relations": [
+        { "type": "compatibleWith", "targetId": "desk_top" }
+      ]
+    },
+    {
+      "id": "laptop",
+      "sku": "WS-LT-14",
+      "type": "laptop",
+      "name": "Ноутбук",
+      "priceEur": 0,
+      "dimensions": { "width": 350, "depth": 240, "height": 20 },
+      "anchorTypeRequired": "desktop_surface",
+      "anchorsProvided": [],
+      "relations": [
+        { "type": "compatibleWith", "targetId": "desk_top" }
+      ]
+    },
+    {
+      "id": "cable_tray",
+      "sku": "WS-CT-800",
+      "type": "cable_tray",
+      "name": "Кабель-канал",
+      "priceEur": 35,
+      "dimensions": { "width": 800, "depth": 100, "height": 60 },
+      "anchorTypeRequired": "cable_tray_mount",
+      "anchorsProvided": [
+        {
+          "id": "tray_channel",
+          "position": { "x": 0, "y": 0, "z": -20 },
+          "direction": { "x": 0, "y": 0, "z": -1 },
+          "allowedTypes": ["power_strip"]
+        }
+      ],
+      "relations": [
+        { "type": "mountedOn", "targetId": "desk_frame" }
+      ]
+    },
+    {
+      "id": "power_strip",
+      "sku": "WS-PS-6",
+      "type": "power_strip",
+      "name": "Сетевой фильтр",
+      "priceEur": 25,
+      "dimensions": { "width": 300, "depth": 60, "height": 40 },
+      "anchorTypeRequired": "tray_channel",
+      "anchorsProvided": [],
+      "relations": [
+        { "type": "compatibleWith", "targetId": "desk_frame" }
+      ]
+    },
+    {
+      "id": "drawer",
+      "sku": "WS-DR-400",
+      "type": "drawer",
+      "name": "Ящик",
+      "priceEur": 110,
+      "dimensions": { "width": 400, "depth": 500, "height": 150 },
+      "anchorTypeRequired": "drawer_mount",
+      "anchorsProvided": [],
+      "relations": [
+        { "type": "mountedOn", "targetId": "desk_frame" }
+      ]
+    }
+  ]
+}
