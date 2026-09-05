@@ -223,13 +223,14 @@
         });
         const data = await response.json();
 
+        applyResult(data);
+
         if (data.nextQuestion) {
           addMessage(data.nextQuestion, 'system');
           return;
         }
 
         addMessage('Конфигурация собрана. Можете менять элементы.', 'system');
-        applyResult(data);
       }
 
       sendBtn.addEventListener('click', sendMessage);

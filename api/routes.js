@@ -33,7 +33,8 @@ function parseItems(queryItems) {
     .filter(Boolean);
 }
 
-function runConfiguration(items, profile) {
+function runConfiguration(items, profile, options) {
+  const isComplete = Boolean(options && options.isComplete);
   const graph = loadGraph();
   const manifest = loadManifest();
   const profileId = profile && profile.id ? profile.id : 'none';
@@ -43,6 +44,7 @@ function runConfiguration(items, profile) {
 
   if (!compatibilityResult.valid) {
     return {
+      status: isComplete ? 'conflict' : 'partial',
       compatibilityResult,
       sceneSolution: null,
       bom: null,
@@ -55,6 +57,7 @@ function runConfiguration(items, profile) {
 
   if (sceneSolution.status !== 'solved') {
     return {
+      status: isComplete ? 'unsolvable' : 'partial',
       compatibilityResult,
       sceneSolution,
       bom: null,
@@ -64,6 +67,7 @@ function runConfiguration(items, profile) {
 
   const calculatedBom = bom.calculateBOM(items, graph, manifest, profile);
   return {
+    status: isComplete ? 'complete' : 'partial',
     compatibilityResult,
     sceneSolution,
     bom: calculatedBom,
@@ -78,7 +82,7 @@ function attachRoutes(app) {
 
   app.get('/api/scene', (req, res) => {
     const items = parseItems(req.query.items);
-    const result = runConfiguration(items, null);
+    const result = runConfiguration(items, null, { isComplete: true });
     res.status(200).json(result);
   });
 
@@ -95,8 +99,8 @@ function attachRoutes(app) {
 
   app.post('/api/session/message', (req, res) => {
     const { profileId, text } = req.body || {};
+    console.log(`[session] message profileId=${profileId}`);
     const profile = loadProfile(profileId);
-    console.log('profile: ', profile);
     if (!profile) {
       return res.status(200).json({
         error: 'Profile ' + profileId + ' not found',
@@ -105,25 +109,18 @@ function attachRoutes(app) {
     }
 
     const processed = processMessage(String(text ?? ''), profile);
-    console.log('processed: ', processed);
     saveProfile(processed.updatedProfile);
 
-    if (processed.nextQuestion !== null) {
-      return res.status(200).json({
-        profileId,
-        nextQuestion: processed.nextQuestion,
-        updatedProfile: processed.updatedProfile,
-      });
-    }
-
+    const isComplete = processed.nextQuestion === null;
     const graph = loadGraph();
     const items = buildItemsFromProfile(processed.updatedProfile, graph);
-    const result = runConfiguration(items, processed.updatedProfile);
+    const result = runConfiguration(items, processed.updatedProfile, { isComplete });
 
     return res.status(200).json({
       profileId,
-      nextQuestion: null,
+      nextQuestion: processed.nextQuestion,
       updatedProfile: processed.updatedProfile,
+      status: result.status,
       compatibilityResult: result.compatibilityResult,
       sceneSolution: result.sceneSolution,
       bom: result.bom,
@@ -145,9 +142,10 @@ function attachRoutes(app) {
       });
     }
 
-    const result = runConfiguration(items ?? [], profile);
+    const result = runConfiguration(items ?? [], profile, { isComplete: true });
     res.status(200).json({
       profileId,
+      status: result.status,
       compatibilityResult: result.compatibilityResult,
       sceneSolution: result.sceneSolution,
       bom: result.bom,
