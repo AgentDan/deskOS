@@ -95,9 +95,8 @@ function attachRoutes(app) {
 
   app.post('/api/session/message', (req, res) => {
     const { profileId, text } = req.body || {};
-    console.log(`[session] message profileId=${profileId}`);
-
     const profile = loadProfile(profileId);
+    console.log('profile: ', profile);
     if (!profile) {
       return res.status(200).json({
         error: 'Profile ' + profileId + ' not found',
@@ -106,6 +105,7 @@ function attachRoutes(app) {
     }
 
     const processed = processMessage(String(text ?? ''), profile);
+    console.log('processed: ', processed);
     saveProfile(processed.updatedProfile);
 
     if (processed.nextQuestion !== null) {
