@@ -34,6 +34,9 @@ function parseItems(queryItems) {
 }
 
 function runConfiguration(items, profile, options) {
+  // Здесь определяется, является ли конфигурация завершённой. 
+  // Если в объекте options установлен флаг isComplete,
+  //  то isComplete будет true, иначе false.
   const isComplete = Boolean(options && options.isComplete);
   const graph = loadGraph();
   const manifest = loadManifest();
@@ -99,7 +102,6 @@ function attachRoutes(app) {
 
   app.post('/api/session/message', (req, res) => {
     const { profileId, text } = req.body || {};
-    console.log(`[session] message profileId=${profileId}`);
     const profile = loadProfile(profileId);
     if (!profile) {
       return res.status(200).json({
@@ -111,9 +113,9 @@ function attachRoutes(app) {
     const processed = processMessage(String(text ?? ''), profile);
     saveProfile(processed.updatedProfile);
 
-    const isComplete = processed.nextQuestion === null;
     const graph = loadGraph();
     const items = buildItemsFromProfile(processed.updatedProfile, graph);
+    const isComplete = processed.nextQuestion === null;
     const result = runConfiguration(items, processed.updatedProfile, { isComplete });
 
     return res.status(200).json({
