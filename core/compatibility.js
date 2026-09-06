@@ -80,14 +80,7 @@ function assertCompatible(items, graph) {
 function printDemo() {
   const graph = loadGraph();
 
-  const validItems = [
-    'desk_frame',
-    'desk_top',
-    'monitor_arm',
-    'monitor',
-    'keyboard',
-    'mouse',
-  ];
+  const validItems = ['desk_top', 'monitor'];
   const invalidItems = ['monitor'];
 
   console.log('=== valid configuration ===');

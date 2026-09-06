@@ -3,12 +3,6 @@ const { updateProfile } = require('../profile/customerProfile');
 
 const QUESTIONS = [
   { field: 'monitors', text: 'Сколько мониторов планируете?' },
-  { field: 'sittingStanding', text: 'Нужен стол с подъёмной рамой — работать стоя?' },
-  { field: 'deskWidth', text: 'Какая ширина стола? (стандарт 1200–1800 мм)' },
-  { field: 'laptop', text: 'Будете использовать ноутбук?' },
-  { field: 'storageRequired', text: 'Нужен ящик для хранения?' },
-  { field: 'cableManagement', text: 'Нужен кабель-канал?' },
-  { field: 'budgetEur', text: 'Какой бюджет в евро?' },
 ];
 
 function getNextQuestion(profile) {

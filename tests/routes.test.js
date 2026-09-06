@@ -8,7 +8,7 @@ const solver = require('../core/solver');
 const bom = require('../core/bom');
 
 const QUESTIONS = {
-  sittingStanding: 'Нужен стол с подъёмной рамой — работать стоя?',
+  monitors: 'Сколько мониторов планируете?',
 };
 
 function request(port, method, urlPath, body) {
@@ -92,7 +92,7 @@ describe('api routes incremental pipeline', () => {
     return started.json.profileId;
   }
 
-  it('returns nextQuestion and a partial scene after the first answer', async () => {
+  it('returns a complete scene after the first answer', async () => {
     const profileId = await startSession();
     const compatibilitySpy = jest.spyOn(compatibility, 'assertCompatible');
 
@@ -102,17 +102,13 @@ describe('api routes incremental pipeline', () => {
     });
 
     expect(step.status).toBe(200);
-    expect(step.json.nextQuestion).toBe(QUESTIONS.sittingStanding);
-    expect(step.json.nextQuestion).not.toBeNull();
-    expect(step.json.status).toBe('partial');
-    expect(step.json.compatibilityResult).toBeDefined();
+    expect(step.json.nextQuestion).toBeNull();
+    expect(step.json.status).toBe('complete');
+    expect(step.json.compatibilityResult.valid).toBe(true);
+    expect(step.json.sceneSolution).not.toBeNull();
+    expect(step.json.sceneSolution.status).toBe('solved');
+    expect(step.json.bom).not.toBeNull();
     expect(compatibilitySpy).toHaveBeenCalledTimes(1);
-
-    if (step.json.compatibilityResult.valid) {
-      expect(step.json.sceneSolution).not.toBeNull();
-      expect(step.json.sceneSolution.status).toBe('solved');
-      expect(step.json.bom).not.toBeNull();
-    }
   });
 
   it('keeps a missing-requires set as partial without failing the request', async () => {
@@ -133,12 +129,12 @@ describe('api routes incremental pipeline', () => {
 
     const step = await post('/api/session/message', {
       profileId,
-      text: 'два монитора',
+      text: 'пока думаю',
     });
 
     expect(step.status).toBe(200);
     expect(step.json.status).toBe('partial');
-    expect(step.json.nextQuestion).not.toBeNull();
+    expect(step.json.nextQuestion).toBe(QUESTIONS.monitors);
     expect(step.json.compatibilityResult.valid).toBe(false);
     expect(step.json.sceneSolution).toBeNull();
     expect(step.json.bom).toBeNull();
@@ -149,16 +145,9 @@ describe('api routes incremental pipeline', () => {
   it('marks the last answer as complete with a solved scene and BOM', async () => {
     const profileId = await startSession();
 
-    await post('/api/session/message', { profileId, text: 'два монитора' });
-    await post('/api/session/message', { profileId, text: 'да, работаю стоя' });
-    await post('/api/session/message', { profileId, text: 'стол 1600мм' });
-    await post('/api/session/message', { profileId, text: 'нет ноутбука' });
-    await post('/api/session/message', { profileId, text: 'нужен ящик' });
-    await post('/api/session/message', { profileId, text: 'да кабель-канал' });
-
     const finished = await post('/api/session/message', {
       profileId,
-      text: 'бюджет 1500 евро',
+      text: 'два монитора',
     });
 
     expect(finished.status).toBe(200);
@@ -185,12 +174,12 @@ describe('api routes incremental pipeline', () => {
 
     const step = await post('/api/session/message', {
       profileId,
-      text: 'два монитора',
+      text: 'пока думаю',
     });
 
     expect(step.status).toBe(200);
     expect(step.json.status).toBe('partial');
-    expect(step.json.nextQuestion).not.toBeNull();
+    expect(step.json.nextQuestion).toBe(QUESTIONS.monitors);
     expect(step.json.sceneSolution).toBeNull();
     expect(step.json.bom).toBeNull();
     expect(step.json.compatibilityResult.valid).toBe(false);
@@ -215,7 +204,7 @@ describe('api routes incremental pipeline', () => {
     expect(conflict.json.bom).toBeNull();
 
     const unsolvable = await get(
-      '/api/scene?items=desk_frame,desk_top,drawer,drawer'
+      '/api/scene?items=desk_top,monitor,monitor,monitor,monitor'
     );
     expect(unsolvable.status).toBe(200);
     expect(unsolvable.json.status).toBe('unsolvable');
@@ -229,7 +218,7 @@ describe('api routes incremental pipeline', () => {
 
     const ok = await post('/api/session/update', {
       profileId,
-      items: ['desk_frame', 'desk_top', 'monitor_arm', 'monitor'],
+      items: ['desk_top', 'monitor'],
     });
     expect(ok.status).toBe(200);
     expect(ok.json.status).toBe('complete');
@@ -271,7 +260,7 @@ describe('runConfiguration status wrapper', () => {
   });
 
   it('uses unsolvable only when isComplete is true', () => {
-    const items = ['desk_frame', 'desk_top', 'drawer', 'drawer'];
+    const items = ['desk_top', 'monitor', 'monitor', 'monitor', 'monitor'];
     const incomplete = runConfiguration(items, emptyProfile, { isComplete: false });
     expect(incomplete.compatibilityResult.valid).toBe(true);
     expect(incomplete.sceneSolution.status).toBe('unsolvable');
@@ -285,7 +274,7 @@ describe('runConfiguration status wrapper', () => {
   });
 
   it('uses complete only when the profile is finished and the scene is solved', () => {
-    const items = ['desk_frame', 'desk_top', 'monitor_arm', 'monitor'];
+    const items = ['desk_top', 'monitor'];
     const incomplete = runConfiguration(items, emptyProfile, { isComplete: false });
     expect(incomplete.status).toBe('partial');
     expect(incomplete.sceneSolution.status).toBe('solved');

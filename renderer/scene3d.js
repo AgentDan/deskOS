@@ -4,14 +4,7 @@ import { CSS2DObject, CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer
 
 const TYPE_COLORS = {
   desk_top: 0x8b6914,
-  desk_frame: 0x888888,
   monitor: 0x222222,
-  monitor_arm: 0x444444,
-  keyboard: 0xcccccc,
-  mouse: 0xcccccc,
-  cable_tray: 0x333333,
-  power_strip: 0x111111,
-  drawer: 0x8b6914,
 };
 
 function colorForType(type) {

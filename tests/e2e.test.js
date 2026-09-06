@@ -8,12 +8,6 @@ const bom = require('../core/bom');
 
 const QUESTIONS = {
   monitors: 'Сколько мониторов планируете?',
-  sittingStanding: 'Нужен стол с подъёмной рамой — работать стоя?',
-  deskWidth: 'Какая ширина стола? (стандарт 1200–1800 мм)',
-  laptop: 'Будете использовать ноутбук?',
-  storageRequired: 'Нужен ящик для хранения?',
-  cableManagement: 'Нужен кабель-канал?',
-  budgetEur: 'Какой бюджет в евро?',
 };
 
 function expectVat(bomResult) {
@@ -98,45 +92,9 @@ describe('end-to-end session', () => {
     const profileId = started.json.profileId;
     createdIds.push(profileId);
 
-    const step1 = await post('/api/session/message', {
-      profileId,
-      text: 'два монитора',
-    });
-    expect(step1.json.nextQuestion).toBe(QUESTIONS.sittingStanding);
-
-    const step2 = await post('/api/session/message', {
-      profileId,
-      text: 'да, работаю стоя',
-    });
-    expect(step2.json.nextQuestion).toBe(QUESTIONS.deskWidth);
-
-    const step3 = await post('/api/session/message', {
-      profileId,
-      text: 'стол 1600мм',
-    });
-    expect(step3.json.nextQuestion).toBe(QUESTIONS.laptop);
-
-    const step4 = await post('/api/session/message', {
-      profileId,
-      text: 'нет ноутбука',
-    });
-    expect(step4.json.nextQuestion).toBe(QUESTIONS.storageRequired);
-
-    const step5 = await post('/api/session/message', {
-      profileId,
-      text: 'нужен ящик',
-    });
-    expect(step5.json.nextQuestion).toBe(QUESTIONS.cableManagement);
-
-    const step6 = await post('/api/session/message', {
-      profileId,
-      text: 'да кабель-канал',
-    });
-    expect(step6.json.nextQuestion).toBe(QUESTIONS.budgetEur);
-
     const finished = await post('/api/session/message', {
       profileId,
-      text: 'бюджет 1500 евро',
+      text: 'два монитора',
     });
 
     expect(finished.status).toBe(200);
@@ -204,15 +162,9 @@ describe('end-to-end session', () => {
     const profileId = started.json.profileId;
     createdIds.push(profileId);
 
-    await post('/api/session/message', { profileId, text: 'два монитора' });
-    await post('/api/session/message', { profileId, text: 'да, работаю стоя' });
-    await post('/api/session/message', { profileId, text: 'стол 1600мм' });
-    await post('/api/session/message', { profileId, text: 'нет ноутбука' });
-    await post('/api/session/message', { profileId, text: 'нужен ящик' });
-    await post('/api/session/message', { profileId, text: 'да кабель-канал' });
     const finished = await post('/api/session/message', {
       profileId,
-      text: 'бюджет 1500 евро',
+      text: 'два монитора',
     });
     expectVat(finished.json.bom);
 

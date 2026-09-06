@@ -15,17 +15,10 @@ describe('calculateBOM', () => {
   const manifest = loadManifest();
 
   it('builds a line for each selected element', () => {
-    const items = [
-      'desk_frame',
-      'desk_top',
-      'monitor_arm',
-      'monitor',
-      'keyboard',
-      'mouse',
-    ];
+    const items = ['desk_top', 'monitor'];
     const bom = calculateBOM(items, graph, manifest);
 
-    expect(bom.lines).toHaveLength(6);
+    expect(bom.lines).toHaveLength(2);
     for (const line of bom.lines) {
       expect(line).toEqual(
         expect.objectContaining({
@@ -42,25 +35,16 @@ describe('calculateBOM', () => {
   });
 
   it('groups duplicate elements into one line', () => {
-    const items = [
-      'desk_frame',
-      'desk_top',
-      'monitor_arm',
-      'monitor_arm',
-      'monitor',
-      'monitor',
-    ];
+    const items = ['desk_top', 'monitor', 'monitor'];
     const bom = calculateBOM(items, graph, manifest);
-    const armLine = bom.lines.find((line) => line.elementId === 'monitor_arm');
     const monitorLine = bom.lines.find((line) => line.elementId === 'monitor');
 
-    expect(armLine.quantity).toBe(2);
     expect(monitorLine.quantity).toBe(2);
-    expect(armLine.totalEur).toBe(85 * 2);
+    expect(monitorLine.totalEur).toBe(320 * 2);
   });
 
   it('includes VAT in the total (HomeCraft defect guard)', () => {
-    const items = ['desk_frame', 'desk_top', 'keyboard'];
+    const items = ['desk_top', 'monitor'];
     const bom = calculateBOM(items, graph, manifest);
 
     expect(bom.vatEur).toBe(bom.subtotalEur * 0.2);
@@ -69,14 +53,7 @@ describe('calculateBOM', () => {
   });
 
   it('warns when the budget is exceeded but still returns a BOM', () => {
-    const items = [
-      'desk_frame',
-      'desk_top',
-      'monitor_arm',
-      'monitor',
-      'keyboard',
-      'mouse',
-    ];
+    const items = ['desk_top', 'monitor'];
     const profile = updateProfile(createProfile(), { budgetEur: 100 });
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
 

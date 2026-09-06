@@ -67,18 +67,11 @@ function loadManifest() {
 }
 
 function printDemo() {
-  const items = [
-    'desk_frame',
-    'desk_top',
-    'monitor_arm',
-    'monitor',
-    'keyboard',
-    'mouse',
-  ];
+  const items = ['desk_top', 'monitor'];
   const graph = loadGraph();
   const manifest = loadManifest();
 
-  console.log('Конфигурация: стол + рама + кронштейн + монитор + клавиатура + мышь');
+  console.log('Конфигурация: стол + монитор');
 
   const compatibility = assertCompatible(items, graph);
   const scene = solve(items, graph, manifest);

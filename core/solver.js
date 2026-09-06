@@ -232,30 +232,15 @@ function printDemo() {
   const graph = loadGraph();
   const manifest = loadManifest();
 
-  const config1 = [
-    'desk_frame',
-    'desk_top',
-    'monitor_arm',
-    'monitor',
-    'keyboard',
-    'mouse',
-  ];
-  const config2 = [
-    'desk_frame',
-    'desk_top',
-    'monitor_arm',
-    'monitor_arm',
-    'monitor',
-    'monitor',
-    'monitor',
-  ];
+  const config1 = ['desk_top', 'monitor'];
+  const config2 = ['desk_top', 'monitor', 'monitor', 'monitor', 'monitor'];
 
-  console.log('Конфигурация 1: стол + кронштейн + монитор + клавиатура + мышь');
+  console.log('Конфигурация 1: стол + монитор');
   if (assertCompatible(config1, graph).valid) {
     console.log(JSON.stringify(solve(config1, graph, manifest), null, 2));
   }
 
-  console.log('Конфигурация 2: три монитора при двух кронштейнах');
+  console.log('Конфигурация 2: четыре монитора на трёх якорях');
   if (assertCompatible(config2, graph).valid) {
     console.log(JSON.stringify(solve(config2, graph, manifest), null, 2));
   }

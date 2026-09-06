@@ -8,14 +8,7 @@ const { createProfile, saveProfile, loadProfile } = require('../profile/customer
 const { getNextQuestion, processMessage } = require('../dialog/scenario');
 const { buildItemsFromProfile } = require('../dialog/profileToItems');
 
-const DEFAULT_ITEMS = [
-  'desk_frame',
-  'desk_top',
-  'monitor_arm',
-  'monitor',
-  'keyboard',
-  'mouse',
-];
+const DEFAULT_ITEMS = ['desk_top', 'monitor'];
 
 function loadManifest() {
   const manifestPath = path.join(__dirname, '..', 'manifest', 'workspace.json');

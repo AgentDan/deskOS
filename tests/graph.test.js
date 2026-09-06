@@ -7,7 +7,7 @@ describe('loadGraph', () => {
 
   it('returns exactly 10 elements', () => {
     const graph = loadGraph();
-    expect(graph).toHaveLength(10);
+    expect(graph).toHaveLength(2);
   });
 
   it('gives each element id, sku, priceEur and dimensions', () => {
